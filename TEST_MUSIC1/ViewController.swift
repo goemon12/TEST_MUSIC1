@@ -7,12 +7,17 @@
 //
 
 import UIKit
+import AVFoundation
 
 class ViewController: UIViewController {
+    var engine: AVAudioEngine?
+    var player: AVAudioPlayerNode?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+
+        engine = AVAudioEngine()
+        player = AVAudioPlayerNode()
     }
 
 
