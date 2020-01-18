@@ -59,7 +59,7 @@ import UIKit
 import AVFoundation
 
 class ViewController: UIViewController {
-    let engine = AVAudioEngine()
+    let audioEngine = AVAudioEngine()
     let player = AVAudioPlayerNode()
     
     override func viewDidLoad() {
@@ -68,7 +68,34 @@ class ViewController: UIViewController {
         
     }
 
-    func aaaa() {
+    func playWave() {
+        let audioFormat = player.outputFormat(forBus: 0)
+        let sampleRate = Float(audioFormat.sampleRate)
+        let length = sampleRate * 3.0
+        let buffer  = AVAudioPCMBuffer(pcmFormat: audioFormat, frameCapacity: UInt32(length))
+        buffer!.frameLength = UInt32(length)
+        
+        for i in 0 ..< Int(audioFormat.channelCount) {
+            for j in 0 ..< Int(buffer!.frameLength) {
+                buffer!.floatChannelData![i][j] = sin(Float.pi * 2 * 440 / sampleRate * Float(j))
+            }
+        }
+        
+        audioEngine.attach(player)
+        audioEngine.connect(player, to: audioEngine.mainMixerNode, format: audioFormat)
+        
+        player.scheduleBuffer(buffer!)
+        do {
+            try audioEngine.start()
+            player.play()
+        } catch let error {
+            print(error)
+        }
+
+    }
+    
+    @IBAction func btn1(_ sender: Any) {
+        playWave()
     }
 }
 
